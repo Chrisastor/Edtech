@@ -1,6 +1,4 @@
-<<<<<<< HEAD
 
-=======
 # 🎓 Sistema Multiplataforma de Acompañamiento Educativo IA (RAG)
 **Proyecto de Título – TIHI84 (INACAP)**  
 **Integrantes:**  
