@@ -51,3 +51,31 @@ class ComunicadoCreate(BaseModel):
     curso_id: uuid.UUID
     titulo: str = Field(..., max_length=150)
     fecha_evento: date
+
+# --- ESQUEMAS DEL MÓDULO 2 (RAG & DOCUMENTOS) ---
+class DocumentoCurricularOut(BaseModel):
+    documento_id: uuid.UUID
+    asignatura_id: uuid.UUID
+    titulo_guia: str
+    objetivo_oa: str
+    nombre_archivo: str
+    peso_bytes: int
+    hash_sha256: str
+    activo_rag: bool
+    total_chunks_vectorizados: int = 0
+
+    class Config:
+        from_attributes = True
+
+class ConsultaRAGRequest(BaseModel):
+    curso_id: uuid.UUID
+    asignatura_id: uuid.UUID
+    pregunta: str = Field(..., min_length=4, max_length=600)
+    modo_consulta: str = Field(default="ALUMNO", pattern="^(ALUMNO|PADRE)$")
+
+class ConsultaRAGResponse(BaseModel):
+    respuesta_tutor: str
+    similitud_coseno_max: float
+    guardrail_status: str
+    motor_utilizado: str
+    fuentes_curriculares: list[dict]

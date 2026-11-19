@@ -23,3 +23,4 @@ Thumbs.db
 
 # Logs
 *.log
+backend-fastapi/storage/guias_pdf/*.pdf
