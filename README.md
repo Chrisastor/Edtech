@@ -118,4 +118,33 @@ Una vez encendido el servidor, entra a la documentación interactiva en:
 * Subida de PDFs físicos a `storage/guias_pdf/` con extracción de texto (`PyMuPDF`) y partición de *chunks*.
 * Generación de embeddings de 768 dimensiones en la RTX 4060 (Ollama) e indexación en `pgvector`.
 * Endpoints de consulta para el **Tutor Socrático** (Estudiante) y modo **"Ayúdame a Ayudar"** (Apoderado) con *Guardrails* infantiles.
->>>>>>> 80872b4 (docs: agrega README con guia de instalacion del Modulo 1)
+## 🚀 Módulo 2 Completado: Ingesta PDF, Motor Híbrido RAG y Guardrails
+
+Ya se encuentra operativo el **Módulo 2**, incorporando la carga y procesamiento de guías curriculares en PDF, la recuperación semántica con `pgvector`, la generación guiada en modos `ALUMNO` y `PADRE`, y las capas de contención y auditoría:
+
+* **Almacenamiento físico e ingesta de PDFs (`PyMuPDF`):** Guarda el archivo en `backend-fastapi/storage/guias_pdf/`, calcula su `hash_sha256`, extrae el texto por página y genera *chunks* con solapamiento (*overlap*).
+* **Embeddings y Motor Híbrido RAG:** Genera vectores de **768 dimensiones** con `nomic-embed-text` en **Ollama** (GPU RTX 4060) y respuestas guiadas con `gemma3:4b` (Ollama local) o **Gemini Cloud API** con *failover* / *circuit breaker*.
+* **Búsqueda contextualizada por asignatura (`build_retrieval_query`):** Enriquece la consulta de búsqueda con los títulos y Objetivos de Aprendizaje (`OA`) activos de la `asignatura_id` seleccionada, evitando bloqueos indebidos ante consultas abiertas o genéricas (por ejemplo, apoyo parental).
+* **Modos pedagógicos y `ChildSafetyGuardrails`:**
+  * **`ALUMNO`:** Tutor socrático con pistas paso a paso y preguntas de reflexión sin entregar la respuesta directa.
+  * **`PADRE` ("Ayúdame a Ayudar"):** Pauta didáctica de 3 pasos (concepto clave, analogía cotidiana y preguntas guía).
+  * **Guardrails:** Contención determinista ante *prompt injection* / copia directa (`BLOQUEADO_INJECTION`) y bloqueo cuando no hay contexto o similitud suficiente (`BLOQUEADO_SIN_CONTEXTO`).
+* **Métricas docentes anonimizadas:** Consulta agregada por curso (`GET /api/v1/rag/metricas-curso/{curso_id}`) con total de interacciones, consultas contextualizadas exitosas (`APROBADO`), tasa `KPI-03` y desglose por `OA` o filtro.
+
+### Nuevos Endpoints del Módulo 2
+
+| Método | Endpoint | Rol Requerido (RBAC) | Descripción |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/api/v1/documentos/subir-y-vectorizar` | `DOCENTE_UTP` | Sube el PDF a disco, extrae/fragmenta texto, genera vectores de 768-d e indexa en `pgvector`. |
+| `GET` | `/api/v1/documentos/{documento_id}/descargar` | Cualquier Rol | Descarga la guía curricular PDF para sincronización / uso offline. |
+| `POST` | `/api/v1/rag/consultar` | Cualquier Rol | Evalúa guardrails, recupera *chunks* en `pgvector` y genera respuesta en modo `ALUMNO` o `PADRE`. |
+| `GET` | `/api/v1/rag/metricas-curso/{curso_id}` | `DOCENTE_UTP` | Entrega métricas anónimas y desglose por `OA` / estado de guardrail del curso. |
+
+### Guías de Prueba Curriculares (1° a 6° Básico)
+Para validar la ingesta y el comportamiento del tutor en distintos niveles y actividades[cite: 1]:
+1. **Lenguaje y Comunicación – 2° Básico (`OA 05`):** Fábula *"El Pudú Veloz y la Tortuga del Bosque"* (comprensión lectora y moraleja)[cite: 1].
+2. **Ciencias Naturales – 4° Básico (`OA 11`):** Estados y cambios de la materia (ideal para analogías en modo `PADRE`)[cite: 1].
+3. **Matemática – 6° Básico (`OA 03`):** Razones y proporcionalidad (razonamiento paso a paso sin resolver el cálculo)[cite: 1].
+
+---
+
