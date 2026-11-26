@@ -148,3 +148,19 @@ Para validar la ingesta y el comportamiento del tutor en distintos niveles y act
 
 ---
 
+## 🖥️ Módulo 3: Plataforma Web Docente (Frontend en React + TypeScript + Tailwind CSS)
+
+Incorporado en `frontend-web/`, corresponde al avance de interfaz web desarrollado por **Paulo Ortega** para conectar con los servicios REST de FastAPI y apoyar la gestión académica, carga de material y consulta/auditoría del sistema:
+
+* **Stack y arquitectura:** Aplicación web en **React + TypeScript + Vite + Tailwind CSS**, organizada en contexto de autenticación (`AuthContext`), servicios de API (`services/api.ts`), tipado de contratos (`types/api.ts`), páginas (`LoginPage`, `DashboardPage`) y módulos funcionales (`AcademicModules`, `RagAndMetricsModules`).
+* **Gestión de sesión y roles:** Inicio de sesión con JWT y adaptación de vistas/permisos según el rol activo (`DOCENTE_UTP`, `ESTUDIANTE`, `APODERADO`).
+* **Módulos académicos y RAG/métricas:** Interfaz para interactuar con cursos (`1° a 6° Básico`), asignaturas, matrículas/vínculos, comunicados, subida/vectorización de guías PDF, consultas en modos `ALUMNO` / `PADRE` y visualización de métricas del curso.
+
+### Cómo Ejecutar el Frontend Web (`frontend-web/`)
+
+Requiere **Node.js (LTS)** instalado en el equipo:
+
+```powershell
+cd frontend-web
+npm install
+npm run dev
